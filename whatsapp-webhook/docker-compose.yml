@@ -1,0 +1,19 @@
+services:
+  whatsapp-db:
+    image: postgres:15
+    container_name: whatsapp-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: whatsapp
+      POSTGRES_PASSWORD: whatsapp123
+      POSTGRES_DB: whatsapp
+      TZ: 'America/Argentina/Buenos_Aires'
+    command: ['postgres', '-c', 'timezone=America/Argentina/Buenos_Aires']
+    ports:
+      - '5433:5432'
+    volumes:
+      - whatsapp_data:/var/lib/postgresql/data
+
+volumes:
+  whatsapp_data:
+

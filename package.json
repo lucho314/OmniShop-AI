@@ -1,0 +1,19 @@
+{
+  "name": "omnishop-ai",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev:tienda": "docker compose -f tienda/docker-compose.yml up -d && pnpm --filter tienda dev",
+    "dev:bot": "docker compose -f whatsapp-webhook/docker-compose.yml up -d && pnpm --filter whatsapp-webhook start:dev",
+    "db:boot-seed": "pnpm --filter whatsapp-webhook seed",
+    "build:tienda": "pnpm --filter tienda build",
+    "build:bot": "pnpm --filter whatsapp-webhook build",
+    "lint": "eslint . --ext .ts,.js",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.7.3"
+  }
+}
