@@ -41,7 +41,13 @@ git clone https://github.com/lucho314/OmniShop-AI.git
 cd omnishop-ai
 ```
 
-2. **Construir imágenes Docker de cada proyecto**
+2. **Instalar dependencias del monorepo**
+
+```bash
+npm install
+```
+
+3. **Construir imágenes Docker de cada proyecto**
 
 ```bash
 # Tienda (Vendure)
@@ -51,15 +57,13 @@ docker build -t omnishop-tienda -f tienda/Dockerfile .
 docker compose -f whatsapp-webhook/docker-compose.yml up -d
 ```
 
-3. **Instalar dependencias del monorepo**
+4. **Preparar la base de datos del bot (solo la primera vez)**
+
+Antes de correr las migraciones asegurate de crear tu archivo `.env` en la carpeta `whatsapp-webhook/`:
 
 ```bash
-npm install
-```
+cp whatsapp-webhook/.env.example whatsapp-webhook/.env
 
-4. **Preparar la base de datos del bot (solo primera vez)**
-
-```bash
 # Migraciones
 npm run migrate:bot
 
@@ -67,7 +71,7 @@ npm run migrate:bot
 npm run generate:bot
 
 # Ejecutar seeds iniciales
-npm run db:boot-seed
+npm run seed:bot
 ```
 
 ---
@@ -75,6 +79,13 @@ npm run db:boot-seed
 ## 🏃 Ejecución
 
 ### Levantar la tienda (Vendure)
+
+Antes de correr las migraciones asegurate de crear tu archivo `.env` en la carpeta `whatsapp-webhook/` y `tienda/`:
+
+```bash
+cp whatsapp-webhook/.env.example whatsapp-webhook/.env
+cp tienda/.env_example tienda/.env
+```
 
 ```bash
 npm run dev:tienda
