@@ -2,12 +2,22 @@
   "name": "omnishop-ai",
   "private": true,
   "version": "1.0.0",
+  "workspaces": [
+    "tienda",
+    "whatsapp-webhook"
+  ],
   "scripts": {
-    "dev:tienda": "docker compose -f tienda/docker-compose.yml up -d && pnpm --filter tienda dev",
-    "dev:bot": "docker compose -f whatsapp-webhook/docker-compose.yml up -d && pnpm --filter whatsapp-webhook start:dev",
-    "db:boot-seed": "pnpm --filter whatsapp-webhook seed",
-    "build:tienda": "pnpm --filter tienda build",
-    "build:bot": "pnpm --filter whatsapp-webhook build",
+    "dev:tienda": "docker compose -f tienda/docker-compose.yml up -d && npm --workspace tienda run dev",
+    "dev:bot": "docker compose -f whatsapp-webhook/docker-compose.yml up -d && npm --workspace whatsapp-webhook run start:dev",
+    "up:all": "docker compose -f tienda/docker-compose.yml up -d && docker compose -f whatsapp-webhook/docker-compose.yml up -d",
+    "down:all": "docker compose -f tienda/docker-compose.yml down && docker compose -f whatsapp-webhook/docker-compose.yml down",
+    "db:boot-seed": "npm run seed --workspace=whatsapp-webhook",
+    "build:tienda": "npm run build --workspace=tienda",
+    "build:bot": "npm run build --workspace=whatsapp-webhook",
+    "migrate:bot": "npx prisma migrate dev --schema=whatsapp-webhook/prisma/schema.prisma",
+    "generate:bot": "npx prisma generate --schema=whatsapp-webhook/prisma/schema.prisma",
+    "migrate:tienda": "npx prisma migrate dev --schema=tienda/prisma/schema.prisma",
+    "generate:tienda": "npx prisma generate --schema=tienda/prisma/schema.prisma",
     "lint": "eslint . --ext .ts,.js",
     "format": "prettier --write ."
   },

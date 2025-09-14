@@ -5,7 +5,7 @@ Este repositorio contiene dos proyectos principales:
 - **`tienda/`** → [Vendure](https://www.vendure.io/) (e-commerce / backend de productos)
 - **`whatsapp-webhook/`** → [NestJS](https://nestjs.com/) bot de WhatsApp Business (atención al cliente, precios, pedidos, etc.)
 
-Ambos proyectos comparten configuración y dependencias a través de **pnpm workspaces**.
+Ambos proyectos comparten configuración y dependencias a través de **npm workspaces**.
 
 ---
 
@@ -15,8 +15,8 @@ Ambos proyectos comparten configuración y dependencias a través de **pnpm work
 .
 ├── tienda/              # Proyecto Vendure (Docker + Node)
 ├── whatsapp-webhook/    # Bot de WhatsApp con NestJS
-├── pnpm-workspace.yaml  # Configuración workspaces
 ├── package.json         # Scripts globales
+├── package-lock.json    # Lockfile de npm workspaces
 └── tsconfig.base.json   # Config TypeScript compartida
 ```
 
@@ -26,17 +26,13 @@ Ambos proyectos comparten configuración y dependencias a través de **pnpm work
 
 - [Docker + Docker Compose](https://docs.docker.com/get-docker/)
 - [Node.js ≥ 20](https://nodejs.org/)
-- [pnpm](https://pnpm.io/)
+- **npm** (ya viene con Node)
 
-Instalar pnpm si no lo tenés:
-
-```bash
-npm install -g pnpm
-```
+> 🔑 Nota: Este monorepo funciona con **npm workspaces**. No uses pnpm ni yarn.
 
 ---
 
-## ⚙️ Instalación y build inicial
+## ⚙️ Instalación inicial
 
 1. **Clonar el repositorio**
 
@@ -49,19 +45,29 @@ cd omnishop-ai
 
 ```bash
 # Tienda (Vendure)
-cd tienda
-docker build -t omnishop-tienda .
+docker build -t omnishop-tienda -f tienda/Dockerfile .
 
-# Bot WhatsApp
-cd ../whatsapp-webhook
-docker build -t omnishop-bot .
+# Bot WhatsApp (solo DB)
+docker compose -f whatsapp-webhook/docker-compose.yml up -d
 ```
 
 3. **Instalar dependencias del monorepo**
-   Desde la raíz:
 
 ```bash
-pnpm install
+npm install
+```
+
+4. **Preparar la base de datos del bot (solo primera vez)**
+
+```bash
+# Migraciones
+npm run migrate:bot
+
+# Generar cliente Prisma
+npm run generate:bot
+
+# Ejecutar seeds iniciales
+npm run db:boot-seed
 ```
 
 ---
@@ -71,35 +77,40 @@ pnpm install
 ### Levantar la tienda (Vendure)
 
 ```bash
-pnpm dev:tienda
+npm run dev:tienda
 ```
 
-➡️ Internamente levanta los contenedores necesarios (`db`, `redis`) y ejecuta `pnpm dev` en `tienda/`.
+➡️ Internamente levanta los contenedores necesarios (`db`, `redis`, etc.) y ejecuta el servidor Vendure en `tienda/`.
 
 ### Levantar el bot de WhatsApp
 
 ```bash
-pnpm dev:bot
-pnpm db:boot-seed
+npm run dev:bot
 ```
+
+➡️ Inicia el servidor NestJS del bot de WhatsApp.
+
+### Bajar ambos proyectos
 
 ```bash
-
+npm run down:all
 ```
-
-➡️ Inicia el servidor NestJS del bot.
 
 ---
 
 ## 🗂️ Scripts útiles
 
-- `pnpm dev:tienda` → Levanta DB/Redis y corre la tienda en modo dev.
-- `pnpm dev:bot` → Levanta el bot de WhatsApp en modo dev.
-- `pnpm build:tienda` → Build de la tienda.
-- `pnpm build:bot` → Build del bot.
-- `pnpm lint` → Corre ESLint en todo el monorepo.
-- `pnpm format` → Formatea el código con Prettier.
-- `pnpm db:boot-seed` → Inicializa la base de datos del bot.
+- `npm run dev:tienda` → Levanta DB/Redis y corre la tienda en modo dev.
+- `npm run dev:bot` → Levanta el bot de WhatsApp en modo dev.
+- `npm run build:tienda` → Build de la tienda.
+- `npm run build:bot` → Build del bot.
+- `npm run migrate:bot` → Aplica migraciones de Prisma para el bot.
+- `npm run generate:bot` → Genera el cliente de Prisma del bot.
+- `npm run db:boot-seed` → Inicializa la base de datos del bot con datos iniciales.
+- `npm run up:all` → Levanta todos los servicios (tienda + bot).
+- `npm run down:all` → Baja todos los servicios.
+- `npm run lint` → Corre ESLint en todo el monorepo.
+- `npm run format` → Formatea el código con Prettier.
 
 ---
 
@@ -127,7 +138,9 @@ PHONE_OVERRIDES={"5493452217053":"543452217053"}
 
 ## ✅ Flujo de desarrollo
 
-1. **Build de imágenes Docker** (solo la primera vez o si cambian los Dockerfiles).
-2. **`pnpm install`** en la raíz del monorepo.
-3. **Levantar los proyectos** con `pnpm dev:tienda` y `pnpm dev:bot`.
-4. ¡Listo! 🎉
+1. **Construir imágenes Docker** (solo la primera vez o si cambian los Dockerfiles).
+2. **`npm install`** en la raíz del monorepo.
+3. **Migrar y generar Prisma** con `npm run migrate:bot && npm run generate:bot`.
+4. **Seed inicial** con `npm run db:boot-seed` (solo primera vez).
+5. **Levantar los proyectos** con `npm run dev:tienda` y `npm run dev:bot`.
+6. ¡Listo! 🎉
