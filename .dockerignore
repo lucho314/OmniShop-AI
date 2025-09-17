@@ -1,0 +1,21 @@
+# Ignorar dependencias pesadas
+**/node_modules
+**/dist
+**/.turbo
+**/.next
+**/.pnpm-store
+**/.cache
+
+# Archivos de control de versiones
+.git
+.gitignore
+
+# Logs y otros temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dockerfiles y composes no deben entrar en el contexto
+Dockerfile
+docker-compose*.yml

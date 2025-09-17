@@ -2,16 +2,26 @@
   "name": "omnishop-ai",
   "private": true,
   "version": "1.0.0",
+  "workspaces": [
+    "tienda",
+    "whatsapp-webhook"
+  ],
   "scripts": {
-    "dev:tienda": "docker compose -f tienda/docker-compose.yml up -d && pnpm --filter tienda dev",
-    "dev:bot": "docker compose -f whatsapp-webhook/docker-compose.yml up -d && pnpm --filter whatsapp-webhook start:dev",
-    "db:boot-seed": "pnpm --filter whatsapp-webhook seed",
-    "build:tienda": "pnpm --filter tienda build",
-    "build:bot": "pnpm --filter whatsapp-webhook build",
+    "dev:tienda": "dotenv -e tienda/.env -- docker compose -f tienda/docker-compose.yml up -d && dotenv -e tienda/.env -- npm --workspace tienda run dev",
+    "dev:bot": "dotenv -e whatsapp-webhook/.env -- docker compose -f whatsapp-webhook/docker-compose.yml up -d && dotenv -e whatsapp-webhook/.env -- npm --workspace whatsapp-webhook run start:dev",
+    "up:all": "dotenv -e tienda/.env -- docker compose -f tienda/docker-compose.yml up -d && dotenv -e whatsapp-webhook/.env -- docker compose -f whatsapp-webhook/docker-compose.yml up -d",
+    "down:all": "dotenv -e tienda/.env -- docker compose -f tienda/docker-compose.yml down && dotenv -e whatsapp-webhook/.env -- docker compose -f whatsapp-webhook/docker-compose.yml down",
+    "build:tienda": "dotenv -e tienda/.env -- npm run build --workspace=tienda",
+    "build:bot": "dotenv -e whatsapp-webhook/.env -- npm run build --workspace=whatsapp-webhook",
+    "migrate:bot": "dotenv -e whatsapp-webhook/.env -- prisma migrate dev --schema=whatsapp-webhook/prisma/schema.prisma",
+    "generate:bot": "dotenv -e whatsapp-webhook/.env -- prisma generate --schema=whatsapp-webhook/prisma/schema.prisma",
+    "seed:bot": "dotenv -e whatsapp-webhook/.env -- npm run seed --workspace=whatsapp-webhook",
+    "prepare:bot": "npm run migrate:bot && npm run generate:bot && npm run seed:bot",
     "lint": "eslint . --ext .ts,.js",
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.7.3"
