@@ -7,7 +7,7 @@ import { SessionModule } from './session/session.module';
 import { PrismaService } from './services/prisma.service';
 import { OptionModule } from './option/option.module';
 import { PaymentModule } from './payment/payment.module';
-import { PriceModule } from './price/price.module';
+import { ProductModule } from './product/product.module';
 import whatsappConfig from './config/whatsapp.config';
 
 @Module({
@@ -20,7 +20,7 @@ import whatsappConfig from './config/whatsapp.config';
     SessionModule,
     OptionModule,
     PaymentModule,
-    PriceModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

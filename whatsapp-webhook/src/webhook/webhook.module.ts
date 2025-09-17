@@ -11,7 +11,7 @@ import { PriceHandler } from './handlers/price.handler';
 import { PaymentHandler } from './handlers/payment.handler';
 import { MenuHandler } from './handlers/menu.handler';
 import { PaymentService } from 'src/payment/payment.service';
-import { PriceService } from 'src/price/price.service';
+import { ProductService } from 'src/product/product.service';
 
 @Module({
   controllers: [WebhookController],
@@ -28,7 +28,7 @@ import { PriceService } from 'src/price/price.service';
     PaymentHandler,
     MenuHandler,
     PaymentService,
-    PriceService,
+    ProductService,
   ],
 })
 export class WebhookModule {}
