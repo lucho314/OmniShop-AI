@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Option {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  title     String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt   
+}
+
+model Session {
+  wa_id     String  @id
+  state     String
+  context   Json    @default("{}")
+  updatedAt BigInt
+}
+
+
+model ProcessedMessage {
+  id String @id
+  createdAt DateTime @default(now())
+}
+
+
+model PaymentMethod {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique   // ej: CASH, CARD, MP_QR
+  name      String             // "Efectivo", "Tarjeta crédito/débito", "QR Mercado Pago"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
